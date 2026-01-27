@@ -37,7 +37,42 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            padding: 2rem 1rem;
+            padding: 0.25rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0.25rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            margin: 0 0 0.15rem 0;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+            animation: neonPulse 2s infinite alternate;
+        }
+
+        @keyframes neonPulse {
+            0% { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+            100% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff; }
+        }
+
+        .subtitle {
+            font-size: 0.8rem;
+            color: #ff00ff;
+            font-weight: 400;
+            text-shadow: 0 0 10px #ff00ff;
+            margin-bottom: 0.25rem;
         }
 
         .container {
@@ -77,39 +112,47 @@
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.35rem;
+            margin-bottom: 0.5rem;
         }
 
         .stat {
             background: var(--card-bg);
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 0.4rem;
+            border-radius: 6px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            border: 2px solid #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            border: 1px solid #00ffff;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 0.65rem;
             color: #00ff00;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.1rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 10px #00ff00;
+            letter-spacing: 0.3px;
+            text-shadow: 0 0 8px #00ff00;
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #00ffff;
-            text-shadow: 0 0 15px #00ffff;
+            text-shadow: 0 0 12px #00ffff;
+            line-height: 1;
+        }
+
+        .stat-helper {
+            font-size: 0.5rem;
+            color: #999;
+            margin-top: 0.1rem;
+            line-height: 1;
         }
 
         .game-area {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 2rem;
+            padding: 0.75rem;
             box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
             border: 2px solid #00ffff;
         }
@@ -118,7 +161,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 0.75rem;
-            margin-bottom: 2rem;
+            margin-bottom: 0.75rem;
         }
 
         .topic-btn {
@@ -154,8 +197,8 @@
             background: var(--bg);
             border-left: 4px solid var(--accent);
             border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.6rem;
         }
 
         .difficulty-badge {
@@ -217,10 +260,11 @@
         }
 
         .question-text {
-            font-size: 1.15rem;
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-            color: var(--text);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 0.6rem;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .math {
@@ -238,20 +282,22 @@
         }
 
         .option {
-            font-size: 1rem;
-            padding: 1rem;
-            background: #0d0d0d;
+            font-size: 1.1rem;
+            padding: 1.25rem;
+            background: #1a1a1a;
             border: 2px solid #00ffff;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: left;
             color: #ffffff;
+            font-weight: 500;
+            line-height: 1.5;
         }
 
         .option:hover {
             border-color: #ff00ff;
-            background: #1a1a1a;
+            background: #2a2a2a;
             transform: translateY(-2px);
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.6);
         }
@@ -269,6 +315,7 @@
             color: #ffffff;
             border-color: #ff0066;
             box-shadow: 0 0 30px rgba(255, 0, 102, 0.9);
+            font-weight: 700;
         }
 
         .input-answer {
@@ -306,51 +353,80 @@
 
         .feedback {
             margin-top: 1.5rem;
-            padding: 1.25rem;
+            padding: 0.75rem;
             border-radius: 8px;
             border-left: 4px solid;
+            background: #1a1a1a;
+            border: 2px solid;
         }
 
         .feedback.correct {
-            background: #d5f4e6;
-            border-color: var(--success);
+            background: rgba(0, 255, 0, 0.15);
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
         }
 
         .feedback.incorrect {
-            background: #fadbd8;
-            border-color: var(--error);
+            background: rgba(255, 0, 102, 0.15);
+            border-color: #ff0066;
+            box-shadow: 0 0 20px rgba(255, 0, 102, 0.3);
         }
 
         .feedback-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
-            color: var(--primary);
+            color: #ffffff;
+            text-shadow: 0 0 10px currentColor;
         }
 
         .explanation {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #ffffff;
             margin-top: 0.75rem;
+            font-weight: 400;
         }
 
         .next-btn {
             font-family: 'Source Sans Pro', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 0.6rem 1.5rem;
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 1rem 3rem;
+            background: #00ffff;
+            color: #000000;
+            border: 3px solid #00ffff;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             transition: all 0.2s ease;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            animation: pulseBorder 2s infinite;
+            display: block;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 255, 1); }
         }
 
         .next-btn:hover {
-            background: var(--primary);
+            background: #ff00ff;
+            color: #ffffff;
+            border-color: #ff00ff;
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 1);
+        }
+
+        .auto-advance-timer {
+            text-align: center;
+            margin-top: 0.75rem;
+            color: #00ff00;
+            font-size: 0.9rem;
+            text-shadow: 0 0 10px #00ff00;
         }
 
         .celebration-emoji {
@@ -413,7 +489,7 @@
             height: 8px;
             background: #e0e0e0;
             border-radius: 4px;
-            margin-bottom: 2rem;
+            margin-bottom: 0.75rem;
             overflow: hidden;
         }
 
@@ -426,17 +502,17 @@
 
         .problem-reference {
             font-size: 0.85rem;
-            color: var(--secondary);
+            color: #00ffff;
             font-style: italic;
             margin-top: 0.5rem;
         }
 
         footer {
             text-align: center;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
             border-top: 1px solid #ddd;
-            color: var(--secondary);
+            color: #00ffff;
             font-size: 0.9rem;
         }
     </style>
@@ -450,16 +526,19 @@
 
         <div class="stats-bar">
             <div class="stat">
-                <div class="stat-label">🏆 Score</div>
-                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">🏆 Level</div>
+                <div class="stat-value" id="score">1</div>
+                <div class="stat-helper">1=Medium 2=Hard 3=Expert 4=MEGA</div>
             </div>
             <div class="stat">
-                <div class="stat-label">✅ W's</div>
+                <div class="stat-label">✅ Correct</div>
                 <div class="stat-value" id="correct">0</div>
+                <div class="stat-helper">Right answers</div>
             </div>
             <div class="stat">
-                <div class="stat-label">📊 Attempts</div>
+                <div class="stat-label">📊 Total</div>
                 <div class="stat-value" id="total">0</div>
+                <div class="stat-helper">Questions answered</div>
             </div>
         </div>
 
@@ -502,19 +581,41 @@
                 const cleanText = text.replace(/[🔥💯⚡💪🧠⭐✨👑🎯🚀💅🏆😤👨‍🍳🌌💜🇨🇦🎤📊✅😂🍍🎬💨🎵🎮💀🤔😬🤖😕📉🙃💙🧂😅🤪🧢🌱❌😎💧🍝📐🔧🔩⬆️🖨️⚙️]/g, '');
                 
                 const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.rate = 1.3; // Fast and energetic
-                utterance.pitch = 1.2; // Higher for excitement
+                utterance.rate = 0.8; // Natural speaking pace
+                utterance.pitch = 1.0; // Natural pitch
                 utterance.volume = 1.0; // Max volume
                 
-                // Try to find a fun voice
+                // Try to find the most natural/human sounding voices
                 const voices = window.speechSynthesis.getVoices();
-                const funVoice = voices.find(voice => 
-                    voice.name.includes('Samantha') || 
-                    voice.name.includes('Karen') ||
-                    voice.name.includes('Daniel') ||
-                    voice.lang.includes('en-US')
-                );
-                if (funVoice) utterance.voice = funVoice;
+                
+                // Priority order: look for high-quality natural voices
+                const preferredVoices = [
+                    'Alex',           // macOS natural voice
+                    'Samantha',       // macOS female
+                    'Daniel',         // UK male, friendly
+                    'Karen',          // Australian female
+                    'Fred',           // US male, casual
+                    'Victoria',       // US female
+                    'Google US English', // Android natural
+                    'Microsoft David', // Windows natural
+                    'Microsoft Zira'   // Windows female
+                ];
+                
+                let selectedVoice = null;
+                for (const voiceName of preferredVoices) {
+                    selectedVoice = voices.find(voice => voice.name.includes(voiceName));
+                    if (selectedVoice) break;
+                }
+                
+                // Fallback: pick the first en-US voice
+                if (!selectedVoice) {
+                    selectedVoice = voices.find(voice => voice.lang.includes('en-US'));
+                }
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                    console.log('Using voice:', selectedVoice.name);
+                }
                 
                 window.speechSynthesis.speak(utterance);
             }
@@ -535,7 +636,8 @@
             currentQuestion: null,
             currentDifficulty: 'medium',
             askedQuestions: new Set(),
-            answerLocked: false
+            answerLocked: false,
+            autoAdvanceTimer: null
         };
 
         const questions = {
@@ -546,7 +648,7 @@
                     difficulty: 'medium',
                     options: ['√84 ≈ 9.17', '√164 ≈ 12.81', '7', '11'],
                     correct: 0,
-                    explanation: "Using c² = a² + b² - 2ab cos C, we get c² = 64 + 100 - 2(8)(10)cos(60°) = 164 - 160(0.5) = 84. Therefore c = √84 ≈ 9.17",
+                    explanation: "Step 1: Identify what we know: a=8, b=10, angle C=60°. Step 2: Use Law of Cosines: c² = a² + b² - 2ab cos(C). Step 3: Plug in: c² = 8² + 10² - 2(8)(10)cos(60°) = 64 + 100 - 160(0.5) = 164 - 80 = 84. Step 4: Take square root: c = √84 ≈ 9.17. Pro tip: Always check that cos(60°) = 0.5!",
                     reference: "Based on Exeter Math 3 problem-solving techniques",
                     id: 'loc_1'
                 },
@@ -556,7 +658,7 @@
                     difficulty: 'medium',
                     options: ['82.8°', '75.5°', '90.0°', '87.2°'],
                     correct: 0,
-                    explanation: "The largest angle is opposite the largest side (6). Using cos C = (a² + b² - c²)/(2ab) = (16 + 25 - 36)/(40) = 5/40 = 0.125, we get C = arccos(0.125) ≈ 82.8°",
+                    explanation: "Key insight: The LARGEST angle is always opposite the LONGEST side! Step 1: Longest side = 6, so we're finding the angle opposite it. Step 2: Use cos(C) = (a² + b² - c²)/(2ab). Step 3: cos(C) = (4² + 5² - 6²)/(2×4×5) = (16 + 25 - 36)/40 = 5/40 = 0.125. Step 4: C = arccos(0.125) = 82.8°. Remember: Larger side = larger opposite angle!",
                     reference: "SSS form of Law of Cosines",
                     id: 'loc_2'
                 },
@@ -1488,11 +1590,52 @@
                 : 0;
             document.getElementById('progress').style.width = progress + '%';
             
+            // Send email every 10 questions
+            if (gameState.questionsAnswered > 0 && gameState.questionsAnswered % 10 === 0) {
+                sendProgressEmail();
+            }
+            
             // Check if done with all questions in topic
             const topicQuestions = questions[gameState.currentTopic];
             if (gameState.askedQuestions.size >= topicQuestions.length && gameState.questionsAnswered > 10) {
                 showFinishButton();
             }
+        }
+
+        function sendProgressEmail() {
+            const accuracy = ((gameState.correctAnswers / gameState.questionsAnswered) * 100).toFixed(1);
+            const finalLevel = gameState.currentDifficulty.toUpperCase();
+            
+            const subject = encodeURIComponent(`Max completed ${gameState.questionsAnswered} questions!`);
+            const body = encodeURIComponent(`Max's Math Practice Update
+
+Date: ${new Date().toLocaleString()}
+Topic: ${gameState.currentTopic}
+Questions Completed: ${gameState.questionsAnswered}
+Correct Answers: ${gameState.correctAnswers}
+Accuracy: ${accuracy}%
+Current Level: ${finalLevel}
+
+Keep going! 🎯`);
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'email-notification';
+            notification.innerHTML = `
+                <div style="background: #00ffff; color: #000; padding: 1rem; border-radius: 8px; position: fixed; top: 1rem; right: 1rem; z-index: 10000; font-weight: 700; box-shadow: 0 0 30px rgba(0,255,255,0.8);">
+                    📧 Opening email to Dad...<br>
+                    <small style="font-weight: 400;">Just hit "Send" in your email app!</small>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 4000);
+            
+            // Try to open email automatically
+            // Note: This will open the email app, user still needs to hit "send"
+            // (Browsers don't allow fully automatic email sending for security)
+            setTimeout(() => {
+                window.open(`mailto:nik.london@gmail.com?subject=${subject}&body=${body}`, '_blank');
+            }, 500);
         }
 
         function showFinishButton() {
@@ -1537,6 +1680,18 @@ Great job Max! 🎯`);
         }
 
         function loadQuestion() {
+            // Clear auto-advance timer when manually advancing
+            if (gameState.autoAdvanceTimer) {
+                clearInterval(gameState.autoAdvanceTimer);
+                gameState.autoAdvanceTimer = null;
+            }
+            
+            // Remove timer display
+            const timerDiv = document.getElementById('autoAdvanceTimer');
+            if (timerDiv) {
+                timerDiv.remove();
+            }
+            
             const randomQuestion = getUnaskedQuestion();
             gameState.currentQuestion = randomQuestion;
             gameState.askedQuestions.add(randomQuestion.id);
@@ -1628,36 +1783,110 @@ Great job Max! 🎯`);
                 "ABSOLUTELY SNATCHED THAT! 👑",
                 "Justin Bieber would be PROUD! 🎤",
                 "Seth Rogen laugh energy! 😂",
-                "Baby baby baby OHHH (you got it)! 💜",
-                "*Seth Rogen voice* Huhuhuhu NICE! 🍍",
-                "Love Yourself... and this answer! 🇨🇦",
-                "Sorry not sorry, you CRUSHED IT! 🎬"
+                "Baby baby baby OHHH you got it! 💜",
+                "Huhuhuhu NICE! 🍍",
+                "Love Yourself and this answer! 🇨🇦",
+                "Sorry not sorry you CRUSHED IT! 🎬",
+                "CERTIFIED BANGER! 🔥",
+                "STRAIGHT FIRE! 💯",
+                "UNREAL! 🤯",
+                "LEGENDARY BEHAVIOR! 👑",
+                "GOATED! 🐐",
+                "LOCKED IN! 🔒",
+                "CLEAN! ✨",
+                "CRISPY! 🍟",
+                "IMMACULATE! 💎",
+                "ELITE STATUS! 🏅",
+                "DIFFERENT BREED! 🦅",
+                "MONSTER ANSWER! 👹",
+                "NASTY WORK! 😤",
+                "FILTHY! 🔥",
+                "INSANE! 🤪",
+                "CRAZY! 😜",
+                "MENTAL! 🧠",
+                "CERTIFIED GENIUS MOMENT! 🎓",
+                "BIG BRAIN TIME! 🧠",
+                "INTELLECTUAL! 🤓",
+                "SCHOLARLY EXCELLENCE! 📚",
+                "PROFESSOR VIBES! 👨‍🏫",
+                "EINSTEIN WHO? 🤔",
+                "NEWTON IS SHOOK! 😱",
+                "PYTHAGORAS IS IMPRESSED! 📐",
+                "EULER WOULD BE PROUD! 📊",
+                "THAT'S HOW IT'S DONE! 💪",
+                "TEXTBOOK PERFECT! 📖",
+                "CHEF'S KISS! 👨‍🍳",
+                "MASTERCLASS! 🎨",
+                "FLAWLESS VICTORY! 🏆",
+                "DOMINATING! 💪",
+                "UNSTOPPABLE! 🚀",
+                "ON FIRE! 🔥",
+                "NUCLEAR! ☢️",
+                "EXPLOSIVE! 💥",
+                "ASTRONOMICAL! 🌟",
+                "OUT OF THIS WORLD! 🌍",
+                "ALIEN INTELLIGENCE! 👽",
+                "SUPERHUMAN! 🦸",
+                "LEGENDARY! 🗿",
+                "MYTHICAL! 🐉",
+                "GODLIKE! ⚡",
+                "TRANSCENDENT! 🌈",
+                "ASCENDED! 🕊️",
+                "ENLIGHTENED! 💡",
+                "AWAKENED! 👁️"
             ];
             
             const wrongMessages = [
-                "L + Ratio (but you'll get it next time) 😅",
-                "Not it chief... try again! 🤔",
+                "L + Ratio but you'll get it next time! 😅",
+                "Not it chief, try again! 🤔",
                 "Oof size: LARGE 😬",
                 "Error 404: Correct Answer Not Found 🤖",
                 "Mission Failed, We'll Get Em Next Time 🎮",
                 "That's tough buddy 😕",
                 "Down bad on that one 📉",
                 "Nahhhh 💀",
-                "Respectfully... no 🙃",
-                "Close! (not really but we believe in you) 💙",
-                "Mid answer ngl 😬",
+                "Respectfully no 🙃",
+                "Close! Not really but we believe in you! 💙",
+                "Mid answer not gonna lie 😬",
                 "Little salty about that one? 🧂",
                 "That's some Ohio energy 💀",
-                "Chopped response fr 😅",
+                "Chopped response for real 😅",
                 "Delulu is not the solulu 🤪",
                 "Cap detected 🧢",
-                "NPC behavior (but you're better than this) 🎮",
-                "Touch grass, then come back 🌱",
+                "NPC behavior but you're better than this! 🎮",
+                "Touch grass then come back 🌱",
                 "Vibe check: failed ❌",
                 "Little too extra with that answer 😂",
                 "Got the ick from that one 😬",
                 "Lowkey wrong, highkey we believe in you! 💪",
-                "That's pretty sus tbh 🤨"
+                "That's pretty sus to be honest 🤨",
+                "Swing and a miss! ⚾",
+                "Better luck next time champ! 🍀",
+                "Not quite there yet! 📍",
+                "Keep trying! You got this! 💪",
+                "Oops! Try the next one! 🔄",
+                "Close but no cigar! 🚬",
+                "Math said no today! 📚",
+                "The calculator is judging you 🧮",
+                "Pythagoras wouldn't approve 📐",
+                "That's a yikes from me dawg 😬",
+                "Gonna need a retry on that one! 🔁",
+                "Back to the drawing board! 📝",
+                "Not your best work! 📉",
+                "Questionable choice! 🤨",
+                "The math isn't mathing! 🔢",
+                "Nope nope nope! 🙅",
+                "Try again king! 👑",
+                "We don't talk about that answer! 🤐",
+                "Let's pretend that didn't happen! 🙈",
+                "Rough! But you got next! 💪",
+                "Chalk that up to experience! ✏️",
+                "Room for improvement! 📈",
+                "Not the droids you're looking for! 🤖",
+                "Houston we have a problem! 🚀",
+                "Missed it by THAT much! 🤏",
+                "The struggle is real! 😤",
+                "Oof that one hurt! 🤕"
             ];
             
             if (isCorrect) {
@@ -1771,6 +2000,46 @@ Great job Max! 🎯`);
             }
             
             updateStats();
+            
+            // Start auto-advance countdown (30 seconds)
+            startAutoAdvance();
+        }
+
+        function startAutoAdvance() {
+            // Clear any existing timer
+            if (gameState.autoAdvanceTimer) {
+                clearInterval(gameState.autoAdvanceTimer);
+            }
+            
+            let secondsLeft = 30;
+            
+            // Create or update timer display
+            let timerDiv = document.getElementById('autoAdvanceTimer');
+            if (!timerDiv) {
+                timerDiv = document.createElement('div');
+                timerDiv.id = 'autoAdvanceTimer';
+                timerDiv.className = 'auto-advance-timer';
+                document.getElementById('gameContent').appendChild(timerDiv);
+            }
+            
+            // Update display
+            const updateTimerDisplay = () => {
+                timerDiv.textContent = `⏱️ Auto-advancing in ${secondsLeft} seconds (or tap button now)`;
+            };
+            
+            updateTimerDisplay();
+            
+            // Start countdown
+            gameState.autoAdvanceTimer = setInterval(() => {
+                secondsLeft--;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(gameState.autoAdvanceTimer);
+                    loadQuestion();
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
         }
 
         // Topic selection
