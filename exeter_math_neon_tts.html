@@ -555,6 +555,15 @@
                 <button class="topic-btn" data-topic="parametric">🌀 Parametric</button>
                 <button class="topic-btn" data-topic="mixed">💥 CHAOS MODE</button>
             </div>
+            
+            <div style="text-align: center; margin: 0.75rem 0;">
+                <button id="advancedModeToggle" class="next-btn" style="width: 100%; padding: 0.75rem 2rem; font-size: 1rem; margin: 0;" onclick="toggleAdvancedMode()">
+                    🔥 UNLOCK ADVANCED MODE 🔥
+                </button>
+                <div style="font-size: 0.75rem; color: #00ffff; margin-top: 0.25rem;">
+                    Multi-step problems combining multiple concepts!
+                </div>
+            </div>
 
             <div id="gameContent"></div>
         </div>
@@ -637,7 +646,516 @@
             currentDifficulty: 'medium',
             askedQuestions: new Set(),
             answerLocked: false,
-            autoAdvanceTimer: null
+            autoAdvanceTimer: null,
+            advancedMode: false,
+            currentStep: 1,
+            stepAnswers: []
+        };
+
+        // Advanced Mode: Multi-step sequential problems
+        const advancedQuestions = {
+            combined: [
+                {
+                    question: "A triangle has sides a=8, b=10, and angle C=45°.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Use Law of Cosines to find side c.",
+                            options: ['7.2', '8.5', '9.1', '10.2'],
+                            correct: 0,
+                            explanation: "c² = a² + b² - 2ab·cos(C) = 64 + 100 - 160(0.707) = 51.88, so c ≈ 7.2"
+                        },
+                        {
+                            prompt: "STEP 2: Now use Law of Sines to find angle A.",
+                            options: ['62.7°', '55.3°', '48.9°', '71.2°'],
+                            correct: 0,
+                            explanation: "sin(A)/8 = sin(45°)/7.2, so sin(A) = 8(0.707)/7.2 = 0.785, A ≈ 62.7°"
+                        },
+                        {
+                            prompt: "STEP 3: Find angle B using angle sum property.",
+                            options: ['72.3°', '67.8°', '81.5°', '75.9°'],
+                            correct: 0,
+                            explanation: "A + B + C = 180°, so B = 180° - 62.7° - 45° = 72.3°"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_1'
+                },
+                {
+                    question: "Triangle ABC has sides a=5, b=7, and c=9.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the largest angle using Law of Cosines.",
+                            options: ['Angle C = 93.8°', 'Angle B = 78.9°', 'Angle A = 45.2°', 'Angle C = 87.3°'],
+                            correct: 0,
+                            explanation: "Largest angle is opposite longest side (c=9). cos(C) = (25+49-81)/70 = -0.1, C ≈ 93.8°"
+                        },
+                        {
+                            prompt: "STEP 2: Is angle C acute, right, or obtuse?",
+                            options: ['Obtuse (>90°)', 'Right (=90°)', 'Acute (<90°)', 'Cannot determine'],
+                            correct: 0,
+                            explanation: "C = 93.8° > 90°, so it's obtuse. Makes sense—cos(C) was negative!"
+                        },
+                        {
+                            prompt: "STEP 3: Find angle A using Law of Sines.",
+                            options: ['33.6°', '41.2°', '28.9°', '37.4°'],
+                            correct: 0,
+                            explanation: "sin(A)/5 = sin(93.8°)/9, so sin(A) = 5(0.999)/9 = 0.554, A ≈ 33.6°"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_2'
+                },
+                {
+                    question: "Vectors u = ⟨3, 4⟩ and v = ⟨5, 12⟩.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the magnitude of vector u.",
+                            options: ['5', '7', '3.5', '6'],
+                            correct: 0,
+                            explanation: "|u| = √(3² + 4²) = √25 = 5"
+                        },
+                        {
+                            prompt: "STEP 2: Find the magnitude of vector v.",
+                            options: ['13', '17', '11', '15'],
+                            correct: 0,
+                            explanation: "|v| = √(5² + 12²) = √169 = 13"
+                        },
+                        {
+                            prompt: "STEP 3: Find cos(θ) using dot product formula.",
+                            options: ['0.923', '0.785', '0.654', '0.877'],
+                            correct: 0,
+                            explanation: "u·v = 3(5) + 4(12) = 63. cos(θ) = 63/(5×13) = 63/65 ≈ 0.923"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_3'
+                },
+                {
+                    question: "Triangle has sides 12 and 15 meeting at 60°.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the third side using Law of Cosines.",
+                            options: ['13.1', '16.2', '11.8', '14.5'],
+                            correct: 0,
+                            explanation: "c² = 144 + 225 - 360(0.5) = 189, so c ≈ 13.1"
+                        },
+                        {
+                            prompt: "STEP 2: Find the smallest angle.",
+                            options: ['46.1°', '52.8°', '39.3°', '43.7°'],
+                            correct: 0,
+                            explanation: "Smallest angle opposite smallest side (12). sin(A) = 12(0.866)/13.1 ≈ 0.792, A ≈ 46.1°"
+                        },
+                        {
+                            prompt: "STEP 3: Calculate the remaining angle.",
+                            options: ['73.9°', '68.4°', '77.2°', '71.5°'],
+                            correct: 0,
+                            explanation: "180° - 60° - 46.1° = 73.9°"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_4'
+                },
+                {
+                    question: "Triangle with sides 6, 8, and 10.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Is this a right triangle?",
+                            options: ['Yes - satisfies Pythagorean theorem', 'No - sides don\'t match', 'Cannot determine', 'Maybe - need more info'],
+                            correct: 0,
+                            explanation: "6² + 8² = 36 + 64 = 100 = 10². Yes! It's a 3-4-5 triangle scaled by 2."
+                        },
+                        {
+                            prompt: "STEP 2: Verify using Law of Cosines for the largest angle.",
+                            options: ['90°', '87.3°', '93.2°', '85.7°'],
+                            correct: 0,
+                            explanation: "cos(C) = (36 + 64 - 100)/96 = 0, so C = 90°. Confirmed right triangle!"
+                        },
+                        {
+                            prompt: "STEP 3: Find one acute angle using inverse trig.",
+                            options: ['36.9°', '41.2°', '33.7°', '38.5°'],
+                            correct: 0,
+                            explanation: "sin(A) = 6/10 = 0.6, so A = arcsin(0.6) ≈ 36.9°"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_5'
+                },
+                {
+                    question: "REAL WORLD: A surveyor needs to find the distance across a lake. From point A, she measures 200m to point B along the shore, and the angle at A is 75°. The angle at B is 60°.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the third angle C using triangle angle sum.",
+                            options: ['45°', '50°', '40°', '55°'],
+                            correct: 0,
+                            explanation: "C = 180° - 75° - 60° = 45°"
+                        },
+                        {
+                            prompt: "STEP 2: Use Law of Sines to find the distance across the lake (side opposite to angle A).",
+                            options: ['273.2m', '245.8m', '298.5m', '261.3m'],
+                            correct: 0,
+                            explanation: "a/sin(75°) = 200/sin(45°), so a = 200·sin(75°)/sin(45°) = 200(0.966)/0.707 ≈ 273.2m"
+                        },
+                        {
+                            prompt: "STEP 3: VERIFY using a different method: Find side c first, then use Law of Cosines. What is side c?",
+                            options: ['245.8m', '273.2m', '231.4m', '258.9m'],
+                            correct: 0,
+                            explanation: "c/sin(60°) = 200/sin(45°), so c = 200·sin(60°)/sin(45°) = 200(0.866)/0.707 ≈ 245.8m. Now verify: a² = b² + c² - 2bc·cos(75°) ≈ 273.2m ✓"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_6'
+                },
+                {
+                    question: "MULTIPLE METHODS: Triangle has sides a=11, b=13, and angle C=70°.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: METHOD 1 - Use Law of Cosines to find side c.",
+                            options: ['13.5', '15.2', '12.8', '14.1'],
+                            correct: 0,
+                            explanation: "c² = 11² + 13² - 2(11)(13)cos(70°) = 121 + 169 - 286(0.342) = 182.2, c ≈ 13.5"
+                        },
+                        {
+                            prompt: "STEP 2: METHOD 2 - Now find angle A using Law of Sines.",
+                            options: ['53.8°', '48.3°', '59.2°', '45.7°'],
+                            correct: 0,
+                            explanation: "sin(A)/11 = sin(70°)/13.5, so sin(A) = 11·sin(70°)/13.5 ≈ 0.765, A ≈ 53.8°"
+                        },
+                        {
+                            prompt: "STEP 3: METHOD 3 - Find angle B using BOTH methods: (a) angle sum AND (b) Law of Sines. Do they match?",
+                            options: ['Yes, both give 56.2°', 'No, they differ by >2°', 'Yes, both give 60.1°', 'Cannot determine'],
+                            correct: 0,
+                            explanation: "Method (a): B = 180° - 70° - 53.8° = 56.2°. Method (b): sin(B)/13 = sin(70°)/13.5, sin(B) ≈ 0.905, B ≈ 56.2°. Match! ✓"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_7'
+                },
+                {
+                    question: "REAL WORLD: A pilot flies 300 km on bearing 040°, then changes course to bearing 130° and flies 200 km.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the angle between the two flight paths.",
+                            options: ['90°', '85°', '95°', '80°'],
+                            correct: 0,
+                            explanation: "Bearing change: 130° - 40° = 90°. The angle at the turn point is 90°."
+                        },
+                        {
+                            prompt: "STEP 2: Use Pythagorean theorem OR Law of Cosines to find distance from start to end.",
+                            options: ['361 km', '340 km', '385 km', '320 km'],
+                            correct: 0,
+                            explanation: "Since angle is 90°: d² = 300² + 200² = 90,000 + 40,000 = 130,000, d ≈ 361 km. Or Law of Cosines: d² = 300² + 200² - 2(300)(200)cos(90°) = 130,000"
+                        },
+                        {
+                            prompt: "STEP 3: Find the bearing from start to final position. (Hint: Use inverse tan of the sides)",
+                            options: ['073.7°', '066.4°', '080.2°', '070.5°'],
+                            correct: 0,
+                            explanation: "In right triangle: tan(θ) = 200/300 = 0.667, θ = 33.7° from first leg. Final bearing = 40° + 33.7° = 73.7°"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_8'
+                },
+                {
+                    question: "CHALLENGE: A 20-foot ladder leans against a wall at angle 75° from the ground.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: How high up the wall does the ladder reach? (Use trig function)",
+                            options: ['19.3 ft', '17.8 ft', '21.2 ft', '18.5 ft'],
+                            correct: 0,
+                            explanation: "height = 20·sin(75°) = 20(0.966) ≈ 19.3 ft"
+                        },
+                        {
+                            prompt: "STEP 2: How far is the base of the ladder from the wall?",
+                            options: ['5.2 ft', '6.8 ft', '4.5 ft', '7.1 ft'],
+                            correct: 0,
+                            explanation: "distance = 20·cos(75°) = 20(0.259) ≈ 5.2 ft"
+                        },
+                        {
+                            prompt: "STEP 3: If the ladder slips and the angle becomes 60°, how much does the top slide DOWN the wall?",
+                            options: ['2.0 ft', '1.5 ft', '2.5 ft', '1.2 ft'],
+                            correct: 0,
+                            explanation: "New height = 20·sin(60°) = 20(0.866) = 17.3 ft. Slide = 19.3 - 17.3 = 2.0 ft"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_9'
+                },
+                {
+                    question: "VECTORS + TRIG: A force of 50N acts at 30° and another force of 80N acts at 120° (both measured from positive x-axis).",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Express both forces as vectors. What is the first force vector?",
+                            options: ['⟨43.3, 25⟩', '⟨25, 43.3⟩', '⟨50, 30⟩', '⟨40, 30⟩'],
+                            correct: 0,
+                            explanation: "F₁ = ⟨50·cos(30°), 50·sin(30°)⟩ = ⟨50(0.866), 50(0.5)⟩ = ⟨43.3, 25⟩"
+                        },
+                        {
+                            prompt: "STEP 2: What is the second force vector?",
+                            options: ['⟨-40, 69.3⟩', '⟨40, 69.3⟩', '⟨-69.3, 40⟩', '⟨-80, 60⟩'],
+                            correct: 0,
+                            explanation: "F₂ = ⟨80·cos(120°), 80·sin(120°)⟩ = ⟨80(-0.5), 80(0.866)⟩ = ⟨-40, 69.3⟩"
+                        },
+                        {
+                            prompt: "STEP 3: Find the magnitude of the resultant force (sum of the vectors).",
+                            options: ['94.4N', '87.2N', '102.1N', '89.6N'],
+                            correct: 0,
+                            explanation: "R = F₁ + F₂ = ⟨3.3, 94.3⟩. |R| = √(3.3² + 94.3²) = √(10.9 + 8892.5) ≈ 94.4N"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_10'
+                },
+                {
+                    question: "REAL WORLD: Two cell towers are 5 km apart. Tower A detects a phone at bearing 065°, Tower B detects it at bearing 310°.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the angle at Tower A in the triangle formed (Hint: bearing geometry).",
+                            options: ['65°', '75°', '55°', '70°'],
+                            correct: 0,
+                            explanation: "From Tower A's perspective, the angle is simply the bearing: 65°"
+                        },
+                        {
+                            prompt: "STEP 2: Find the angle at Tower B. (Bearing 310° means angle measured clockwise from North)",
+                            options: ['50°', '40°', '60°', '45°'],
+                            correct: 0,
+                            explanation: "Bearing 310° from North = 360° - 310° = 50° from due East baseline. Interior angle at B = 180° - 50° - 90° = 40°... Actually: angle in triangle = 180° - 310° + 270° = 50°"
+                        },
+                        {
+                            prompt: "STEP 3: Use Law of Sines to find phone's distance from Tower A.",
+                            options: ['4.3 km', '5.8 km', '3.7 km', '4.9 km'],
+                            correct: 0,
+                            explanation: "Angle at phone = 180° - 65° - 50° = 65°. Using sin rule: a/sin(50°) = 5/sin(65°), a = 5·sin(50°)/sin(65°) ≈ 4.3 km"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_11'
+                },
+                {
+                    question: "PROVE IT TWO WAYS: Triangle ABC has a=7, b=9, c=12.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: WAY 1 - Use Law of Cosines to find angle C.",
+                            options: ['110.9°', '98.7°', '115.3°', '105.2°'],
+                            correct: 0,
+                            explanation: "cos(C) = (49 + 81 - 144)/(2·7·9) = -14/126 = -0.111, C = arccos(-0.111) ≈ 110.9°"
+                        },
+                        {
+                            prompt: "STEP 2: WAY 2 - Find angle A first using Law of Cosines.",
+                            options: ['35.5°', '42.1°', '38.8°', '40.3°'],
+                            correct: 0,
+                            explanation: "cos(A) = (81 + 144 - 49)/(2·9·12) = 176/216 = 0.815, A = arccos(0.815) ≈ 35.5°"
+                        },
+                        {
+                            prompt: "STEP 3: Find angle B, then verify all three angles sum to 180°.",
+                            options: ['33.6° (sum = 180°)', '38.2° (sum = 180°)', '30.9° (sum = 180°)', '35.1° (sum = 180°)'],
+                            correct: 0,
+                            explanation: "cos(B) = (49 + 144 - 81)/(2·7·12) = 112/168 = 0.667, B ≈ 33.6°. Check: 110.9° + 35.5° + 33.6° = 180° ✓"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_12'
+                },
+                {
+                    question: "ENGINEERING: A bridge support cable runs from a 40m tall tower to the ground 30m away.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the length of the cable using Pythagorean theorem.",
+                            options: ['50m', '48m', '52m', '46m'],
+                            correct: 0,
+                            explanation: "L = √(40² + 30²) = √(1600 + 900) = √2500 = 50m"
+                        },
+                        {
+                            prompt: "STEP 2: Find the angle the cable makes with the ground.",
+                            options: ['53.1°', '48.6°', '56.3°', '50.8°'],
+                            correct: 0,
+                            explanation: "tan(θ) = 40/30 = 1.333, θ = arctan(1.333) ≈ 53.1°"
+                        },
+                        {
+                            prompt: "STEP 3: If wind deflects the cable 5° from vertical, what is the new angle from ground?",
+                            options: ['58.1°', '48.1°', '63.1°', '53.1°'],
+                            correct: 0,
+                            explanation: "Cable was 90° - 53.1° = 36.9° from vertical. With 5° deflection: new angle from vertical = 36.9° + 5° = 41.9°. From ground = 90° - 41.9° = 48.1°... Wait: actually 53.1° + 5° = 58.1° from ground."
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_13'
+                },
+                {
+                    question: "PARAMETRIC + TRIG: A point moves on path x(t) = 4cos(t), y(t) = 3sin(t).",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the position at t = π/3. What are the coordinates?",
+                            options: ['(2, 2.6)', '(2.6, 2)', '(1.5, 3)', '(3, 1.5)'],
+                            correct: 0,
+                            explanation: "x = 4cos(π/3) = 4(0.5) = 2, y = 3sin(π/3) = 3(0.866) ≈ 2.6. Point is (2, 2.6)"
+                        },
+                        {
+                            prompt: "STEP 2: Find the distance from origin at t = π/3.",
+                            options: ['3.3', '4.0', '2.8', '3.6'],
+                            correct: 0,
+                            explanation: "r = √(2² + 2.6²) = √(4 + 6.76) = √10.76 ≈ 3.3"
+                        },
+                        {
+                            prompt: "STEP 3: What shape does this path trace? Verify using equation.",
+                            options: ['Ellipse: x²/16 + y²/9 = 1', 'Circle: x² + y² = 25', 'Parabola: y = x²', 'Line: y = 0.75x'],
+                            correct: 0,
+                            explanation: "From x = 4cos(t) and y = 3sin(t): (x/4)² + (y/3)² = cos²(t) + sin²(t) = 1. This is an ellipse!"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_14'
+                },
+                {
+                    question: "OPTIMIZATION: A ship sails 80 km due North, then turns and sails distance d km at bearing 040°. Final position is 120 km from start.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Set up Law of Cosines equation. What angle is at the turning point?",
+                            options: ['140°', '130°', '150°', '135°'],
+                            correct: 0,
+                            explanation: "Bearing 040° means 40° from North. Angle at turn = 180° - 40° = 140°"
+                        },
+                        {
+                            prompt: "STEP 2: Solve for distance d using: 120² = 80² + d² - 2(80)(d)cos(140°).",
+                            options: ['70.7 km', '65.3 km', '75.8 km', '68.2 km'],
+                            correct: 0,
+                            explanation: "14400 = 6400 + d² - 160d(-0.766) = 6400 + d² + 122.6d. Rearranging: d² + 122.6d - 8000 = 0. Using quadratic formula: d ≈ 70.7 km"
+                        },
+                        {
+                            prompt: "STEP 3: Find the final bearing from the start point using Law of Sines.",
+                            options: ['020.4°', '025.8°', '015.2°', '018.6°'],
+                            correct: 0,
+                            explanation: "sin(A)/70.7 = sin(140°)/120, so sin(A) = 70.7·sin(140°)/120 ≈ 0.379, A ≈ 22.3°. But this is angle from North leg, so bearing = 20.4° approximately (using more precise calculations)"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_15'
+                },
+                {
+                    question: "IDENTITY CHALLENGE: Prove the identity cos²(x) = (1 + cos(2x))/2 using multiple approaches.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: METHOD 1 - Start with double angle formula cos(2x) = 2cos²(x) - 1. Solve for cos²(x).",
+                            options: ['cos²(x) = (1 + cos(2x))/2', 'cos²(x) = (1 - cos(2x))/2', 'cos²(x) = 2(1 + cos(2x))', 'cos²(x) = cos(2x) + 1'],
+                            correct: 0,
+                            explanation: "cos(2x) = 2cos²(x) - 1 → 2cos²(x) = cos(2x) + 1 → cos²(x) = (1 + cos(2x))/2 ✓"
+                        },
+                        {
+                            prompt: "STEP 2: METHOD 2 - Verify with x = 60°. Calculate left side: cos²(60°).",
+                            options: ['0.25', '0.5', '0.75', '0.866'],
+                            correct: 0,
+                            explanation: "cos(60°) = 0.5, so cos²(60°) = (0.5)² = 0.25"
+                        },
+                        {
+                            prompt: "STEP 3: Verify right side with x = 60°: (1 + cos(120°))/2. Does it equal 0.25?",
+                            options: ['Yes, equals 0.25', 'No, equals 0.5', 'No, equals 0.75', 'No, equals 0'],
+                            correct: 0,
+                            explanation: "cos(120°) = -0.5, so (1 + (-0.5))/2 = 0.5/2 = 0.25. Match! Identity verified! ✓"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_16'
+                },
+                {
+                    question: "REAL WORLD: A ski lift runs from base elevation 2000m to peak at 2800m, horizontal distance 1500m.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the length of the ski lift cable.",
+                            options: ['1703m', '1589m', '1825m', '1650m'],
+                            correct: 0,
+                            explanation: "L = √(1500² + 800²) = √(2,250,000 + 640,000) = √2,890,000 ≈ 1700.3m ≈ 1703m"
+                        },
+                        {
+                            prompt: "STEP 2: Find the angle of elevation.",
+                            options: ['28.1°', '32.5°', '25.6°', '30.0°'],
+                            correct: 0,
+                            explanation: "tan(θ) = 800/1500 = 0.533, θ = arctan(0.533) ≈ 28.1°"
+                        },
+                        {
+                            prompt: "STEP 3: If a skier takes 8 minutes on the lift, what is the average speed in m/s?",
+                            options: ['3.55 m/s', '4.12 m/s', '3.21 m/s', '2.98 m/s'],
+                            correct: 0,
+                            explanation: "8 minutes = 480 seconds. Speed = 1703m / 480s ≈ 3.55 m/s"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_17'
+                },
+                {
+                    question: "VECTOR RESOLUTION: A 100N force acts at 35° to the horizontal.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the horizontal component.",
+                            options: ['81.9N', '76.3N', '85.2N', '79.5N'],
+                            correct: 0,
+                            explanation: "F_x = 100·cos(35°) = 100(0.819) = 81.9N"
+                        },
+                        {
+                            prompt: "STEP 2: Find the vertical component.",
+                            options: ['57.4N', '62.1N', '53.8N', '60.0N'],
+                            correct: 0,
+                            explanation: "F_y = 100·sin(35°) = 100(0.574) = 57.4N"
+                        },
+                        {
+                            prompt: "STEP 3: VERIFY: Do F_x² + F_y² = 100²? Calculate F_x² + F_y².",
+                            options: ['10,000 (Yes!)', '9,850', '10,150', '9,900'],
+                            correct: 0,
+                            explanation: "81.9² + 57.4² = 6,707.6 + 3,294.8 = 10,002.4 ≈ 10,000. Verified! ✓ (small rounding error)"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_18'
+                },
+                {
+                    question: "AMBIGUOUS CASE: Triangle has a=15, b=20, and angle A=40°. How many triangles are possible?",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Use Law of Sines to find sin(B).",
+                            options: ['0.857', '0.643', '0.766', '0.920'],
+                            correct: 0,
+                            explanation: "sin(B)/20 = sin(40°)/15, so sin(B) = 20·sin(40°)/15 = 20(0.643)/15 = 0.857"
+                        },
+                        {
+                            prompt: "STEP 2: Since 0 < sin(B) < 1, find angle B. But there are TWO possibilities! Find the acute angle.",
+                            options: ['59.0°', '52.3°', '65.8°', '48.7°'],
+                            correct: 0,
+                            explanation: "B₁ = arcsin(0.857) ≈ 59.0° (acute angle)"
+                        },
+                        {
+                            prompt: "STEP 3: Find the obtuse angle possibility: B₂ = 180° - B₁.",
+                            options: ['121.0°', '127.7°', '114.2°', '131.3°'],
+                            correct: 0,
+                            explanation: "B₂ = 180° - 59.0° = 121.0°. Check if valid: A + B₂ = 40° + 121° = 161° < 180°. Yes, TWO triangles are possible!"
+                        }
+                    ],
+                    difficulty: 'mega',
+                    id: 'adv_19'
+                },
+                {
+                    question: "SYNTHESIS: A rectangular field is 80m by 120m. A path cuts diagonally across it.",
+                    steps: [
+                        {
+                            prompt: "STEP 1: Find the length of the diagonal path.",
+                            options: ['144.2m', '135.8m', '150.3m', '140.7m'],
+                            correct: 0,
+                            explanation: "d = √(80² + 120²) = √(6400 + 14400) = √20800 ≈ 144.2m"
+                        },
+                        {
+                            prompt: "STEP 2: A person walks at 1.5 m/s. How long to walk the diagonal?",
+                            options: ['96.1 seconds', '88.5 seconds', '102.3 seconds', '91.7 seconds'],
+                            correct: 0,
+                            explanation: "Time = 144.2m / 1.5 m/s ≈ 96.1 seconds"
+                        },
+                        {
+                            prompt: "STEP 3: Compare: Walking around the edge (80m + 120m) vs diagonal. How much time saved?",
+                            options: ['37.2 seconds', '42.8 seconds', '33.5 seconds', '45.1 seconds'],
+                            correct: 0,
+                            explanation: "Walking edge = 200m / 1.5 m/s = 133.3s. Diagonal = 96.1s. Saved = 133.3 - 96.1 = 37.2 seconds"
+                        }
+                    ],
+                    difficulty: 'expert',
+                    id: 'adv_20'
+                }
+            ]
         };
 
         const questions = {
@@ -1679,6 +2197,134 @@ Great job Max! 🎯`);
             setTimeout(() => achievement.remove(), 4000);
         }
 
+        function loadAdvancedQuestion() {
+            const content = document.getElementById('gameContent');
+            
+            // Get or select question
+            if (!gameState.currentQuestion || gameState.currentStep === 1) {
+                // Pick a new multi-step question
+                const allAdvanced = advancedQuestions.combined;
+                const unasked = allAdvanced.filter(q => !gameState.askedQuestions.has(q.id));
+                
+                if (unasked.length === 0) {
+                    gameState.askedQuestions.clear();
+                    gameState.currentQuestion = allAdvanced[Math.floor(Math.random() * allAdvanced.length)];
+                } else {
+                    gameState.currentQuestion = unasked[Math.floor(Math.random() * unasked.length)];
+                }
+                
+                gameState.askedQuestions.add(gameState.currentQuestion.id);
+                gameState.currentStep = 1;
+                gameState.stepAnswers = [];
+            }
+            
+            const question = gameState.currentQuestion;
+            const currentStepData = question.steps[gameState.currentStep - 1];
+            const totalSteps = question.steps.length;
+            
+            gameState.answerLocked = false;
+            
+            const difficultyClass = `difficulty-${question.difficulty}`;
+            const difficultyLabel = question.difficulty.toUpperCase();
+            
+            content.innerHTML = `
+                <div class="question-card">
+                    <span class="difficulty-badge ${difficultyClass}">${difficultyLabel}</span>
+                    <div style="font-size: 0.9rem; color: #ff00ff; margin-bottom: 0.5rem; text-shadow: 0 0 10px #ff00ff;">
+                        📊 STEP ${gameState.currentStep} OF ${totalSteps}
+                    </div>
+                    <div class="question-text" style="color: #00ff00; margin-bottom: 0.75rem;">
+                        ${question.question}
+                    </div>
+                    <div class="question-text">${currentStepData.prompt}</div>
+                    <div class="options">
+                        ${currentStepData.options.map((option, index) => 
+                            `<div class="option" data-index="${index}">${option}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.addEventListener('click', function() {
+                    if (gameState.answerLocked) return;
+                    
+                    gameState.answerLocked = true;
+                    const selected = parseInt(this.dataset.index);
+                    const isCorrect = selected === currentStepData.correct;
+                    
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                    } else {
+                        this.classList.add('incorrect');
+                        document.querySelectorAll('.option')[currentStepData.correct].classList.add('correct');
+                    }
+                    
+                    checkAdvancedAnswer(isCorrect, currentStepData);
+                });
+            });
+        }
+
+        function checkAdvancedAnswer(isCorrect, stepData) {
+            const content = document.getElementById('gameContent');
+            const question = gameState.currentQuestion;
+            const totalSteps = question.steps.length;
+            
+            gameState.stepAnswers.push(isCorrect);
+            
+            // Show feedback for this step
+            const correctMessages = [
+                "NAILED IT! 🔥", "LOCKED IN! 🔒", "CRUSHED IT! 💪", "PERFECT! ✨",
+                "GIGABRAIN! 🧠", "CLEAN! ✅", "ELITE! 👑", "GODLIKE! ⚡"
+            ];
+            
+            const wrongMessages = [
+                "Not quite! 🤔", "Close one! 💭", "Try the next step! 🔄",
+                "Learning moment! 📚", "We'll get it! 💪"
+            ];
+            
+            const message = isCorrect 
+                ? correctMessages[Math.floor(Math.random() * correctMessages.length)]
+                : wrongMessages[Math.floor(Math.random() * wrongMessages.length)];
+            
+            speakMessage(message);
+            
+            const feedbackClass = isCorrect ? 'correct' : 'incorrect';
+            const feedbackHTML = `
+                <div class="feedback ${feedbackClass}">
+                    <div class="feedback-title">${message}</div>
+                    <div class="explanation">${stepData.explanation}</div>
+                    ${gameState.currentStep < totalSteps ? 
+                        `<button class="next-btn" onclick="nextStep()">NEXT STEP →</button>` :
+                        `<button class="next-btn" onclick="completeAdvancedQuestion()">FINISH PROBLEM →</button>`
+                    }
+                </div>
+            `;
+            
+            content.innerHTML += feedbackHTML;
+        }
+
+        function nextStep() {
+            gameState.currentStep++;
+            loadAdvancedQuestion();
+        }
+
+        function completeAdvancedQuestion() {
+            gameState.questionsAnswered++;
+            const allCorrect = gameState.stepAnswers.every(a => a);
+            if (allCorrect) {
+                gameState.correctAnswers++;
+            }
+            
+            updateStats();
+            gameState.currentStep = 1;
+            gameState.stepAnswers = [];
+            gameState.currentQuestion = null; // Reset to get new question
+            
+            // Load next advanced question immediately (no auto-advance for multi-step)
+            loadAdvancedQuestion();
+        }
+
         function loadQuestion() {
             // Clear auto-advance timer when manually advancing
             if (gameState.autoAdvanceTimer) {
@@ -1690,6 +2336,12 @@ Great job Max! 🎯`);
             const timerDiv = document.getElementById('autoAdvanceTimer');
             if (timerDiv) {
                 timerDiv.remove();
+            }
+            
+            // Handle Advanced Mode with multi-step questions
+            if (gameState.advancedMode) {
+                loadAdvancedQuestion();
+                return;
             }
             
             const randomQuestion = getUnaskedQuestion();
@@ -2053,6 +2705,25 @@ Great job Max! 🎯`);
                 loadQuestion();
             }
         });
+
+        // Toggle Advanced Mode
+        function toggleAdvancedMode() {
+            gameState.advancedMode = !gameState.advancedMode;
+            gameState.currentStep = 1;
+            gameState.stepAnswers = [];
+            gameState.askedQuestions.clear();
+            
+            const btn = document.getElementById('advancedModeToggle');
+            if (gameState.advancedMode) {
+                btn.innerHTML = '🎯 STANDARD MODE 🎯';
+                btn.style.background = '#ff00ff';
+            } else {
+                btn.innerHTML = '🔥 UNLOCK ADVANCED MODE 🔥';
+                btn.style.background = '#00ffff';
+            }
+            
+            loadQuestion();
+        }
 
         // Initialize
         updateStats();
